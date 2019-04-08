@@ -60,9 +60,60 @@ func Initialize() [][]int {
     return graph
 }
 
+func MinCostTree(g [][]int) []int {
+    dim := len(g)
+    distance := make([]int, dim)
+    for i := 0; i < dim; i++ {
+        distance[i] = INT_MAX
+    }
+    parent := make([]int, dim)
+    visit := make([]bool, dim)
+
+    // prim's algorithm
+    distance[0] = 0  // select the 0 point
+    parent[0] = 0
+    for i := 0; i < dim; i++ {
+        a := -1
+        min := INT_MAX
+        for j := 0; j < dim; j++ {
+            if !visit[j] && distance[j] < min {
+                a = j
+                min = distance[j]
+            }
+        }
+        if a == -1 {
+            break
+        }
+        visit[a] = true
+
+        for b := 0; b < dim; b++ {
+            if !visit[b] && g[a][b] < distance[b]{
+                distance[b] = g[a][b]
+                parent[b] = a
+            }
+        }
+    }
+    return parent
+/*
+    // Prufer enconding
+    code := make([]int, dim - 1)
+    for i := 0; i < dim - 1; i++ {
+        flag := false
+    }
+*/
+}
+
+/*
+func Prufer2Graph(p []int) [][]bool{
+}
+*/
 
 func main() {
     graph := Initialize()
-    fmt.Println(graph)
+    minT := MinCostTree(graph)
+    fmt.Println(
+        graph,
+        minT,
+    )
 }
 

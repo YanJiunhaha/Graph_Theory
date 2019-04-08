@@ -1,0 +1,11 @@
+10
+x 6 x x x 16 x x 18 19
+6 x x x x x x x x 0
+x x x x x x 14 8 x 17
+x x x x 11 x x x x 0
+x x x 11 x x x x x 10
+16 x x x x x x x x 0
+x x 14 x x x x x x 0
+x x 8 x x x x x x 0
+18 x x x x x x x x 0
+19 x 17 x 1x x x x x 0
