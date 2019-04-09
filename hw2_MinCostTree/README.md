@@ -12,18 +12,18 @@
 * Using binary file to run
     * You have to run on environment of Linux.
     ```
-    $ cd /bin/
+    $ cd bin/
     $ ./main "input file path"
     ```
 * Using GO compiler to run (Recommend for other environment)
     * You have to intall GO compiler by fallowing the above link, and using the GO to run.
     ```
-    $ cd /src/
+    $ cd src/
     $ go run main.go "input file path"
     ```
     * You can create the exe file for your environment
     ```
-    $ cd /src/
+    $ cd src/
     $ go build main.go
     ```
 
@@ -50,11 +50,11 @@ UBUNTU_CODENAME=bionic
 * These are some testing file in `/test`, you can chose what you want.
 * Using exe file on Linux
     ```
-    $ cd /bin
+    $ cd bin/
     $ ./main ../test/input.txt
     ```
 * Using Go run
     ```
-    $ cd /src
+    $ cd src/
     $ go run main.go ../test/input.txt
     ```
