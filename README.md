@@ -1,1 +1,1 @@
-# Graph_Theory
+# Graph_Theory class
