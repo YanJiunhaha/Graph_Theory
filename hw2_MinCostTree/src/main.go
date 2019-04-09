@@ -23,15 +23,17 @@ func ReadGraph(path string) (out [][]int) {
     f, err := ioutil.ReadFile(path)
     check(err)
 
-    data := strings.Split(string(f), "\n")
+    data := strings.Split(string(f),"\n")
+    for i := 0; i < len(data); i++ {
+        data[i] = strings.TrimSuffix(data[i], "\r")
+    }
+
     dim, err := strconv.Atoi(data[0])
     check(err)
 
-    fmt.Printf("Creating %d sizes of [][]int\n", dim)
     out = make([][]int, dim)
 
     for i := 1; i <= dim; i++ {
-        fmt.Printf("%d:Creating %d sizes of []int for [%d][]int\n", i, dim, dim)
         tmp := make([]int, dim)
         tmp_str := strings.Split(data[i], " ")
         for j, tmp_data := range(tmp_str) {
@@ -60,7 +62,21 @@ func Initialize() [][]int {
     return graph
 }
 
-func MinCostTree(g [][]int) []int {
+func OrMatrixT(g *[][]bool){
+    dim := len(*g)
+    for i := 0; i < dim; i++{
+        for j := 0; j < dim; j++{
+            if i == j {
+                (*g)[i][j] = false
+                break
+            }
+            (*g)[i][j] = (*g)[i][j] || (*g)[j][i]
+            (*g)[j][i] = (*g)[i][j] || (*g)[j][i]
+        }
+    }
+}
+
+func MinCostTree(g [][]int) [][]bool {
     dim := len(g)
     distance := make([]int, dim)
     for i := 0; i < dim; i++ {
@@ -93,27 +109,105 @@ func MinCostTree(g [][]int) []int {
             }
         }
     }
-    return parent
-/*
-    // Prufer enconding
-    code := make([]int, dim - 1)
-    for i := 0; i < dim - 1; i++ {
-        flag := false
+
+    // matrix enconding
+    code := make([][]bool, dim)
+    for i := 0; i < dim; i++ {
+        tmp := make([]bool, dim)
+        tmp[parent[i]] = true
+        code[i] = tmp
     }
-*/
+    OrMatrixT(&code)
+
+    return code
 }
 
-/*
-func Prufer2Graph(p []int) [][]bool{
+func Graph2Prufer(g [][]bool) []int {
+    dim := len(g)
+    p := make([]int, dim - 2)
+    for i := 0; i < len(p); i++ {
+        for j := 0; j < dim; j++{
+            count := 0
+            v := -1
+            for k := 0; k < dim; k++{
+                if g[j][k] == true{
+                    v = k
+                    count += 1
+                }
+            }
+            if count == 1 {
+                p[i] = v
+                g[j][v] = false
+                g[v][j] = false
+                break
+            }
+        }
+    }
+    return p
 }
-*/
+
+func Prufer2Graph(p []int) [][]bool{
+    l := len(p)
+    dim := l + 2
+    g := make([][]bool, dim)
+    g[dim-1] = make([]bool, dim)
+    for i := 0; i < l; i++ {
+        tmp := make([]bool, dim)
+        for j := 0; j < dim; j++ {
+            exist := false
+            for _, v := range(p){
+                if j == v {
+                    exist = true
+                    break
+                }
+            }
+            if !exist {
+                tmp[p[i]] = true
+                g[j] = tmp
+                if i == l - 1 {
+                    finial := make([]bool, dim)
+                    finial[dim-1] = true
+                    g[p[i]] = finial
+                }
+                p[i] = j
+                break
+            }
+        }
+    }
+    OrMatrixT(&g)
+    return g
+}
 
 func main() {
     graph := Initialize()
     minT := MinCostTree(graph)
-    fmt.Println(
-        graph,
-        minT,
-    )
+    fmt.Println("\n1. Generate the minium cost spanning tree using Prim's algorithm.")
+    for _, t := range(minT){
+        for _, e := range(t){
+            if e {
+                fmt.Print("1 ")
+            } else {
+                fmt.Print("0 ")
+            }
+        }
+        fmt.Println()
+    }
+
+    prufer := Graph2Prufer(minT)
+    fmt.Println("\n2. From the above spanning tree, generate the corresponding Prufer code.")
+    fmt.Println(prufer)
+
+    g := Prufer2Graph(prufer)
+    fmt.Println("\n3. Given and Prufer code, generate the corresponding tree.(using above Prufer's code)")
+    for _, t := range(g){
+        for _, e := range(t){
+            if e {
+                fmt.Print("1 ")
+            } else {
+                fmt.Print("0 ")
+            }
+        }
+        fmt.Println()
+    }
 }
 
